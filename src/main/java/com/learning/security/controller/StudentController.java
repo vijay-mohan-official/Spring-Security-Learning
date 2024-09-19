@@ -1,6 +1,6 @@
 package com.learning.security.controller;
 
-import com.learning.security.entity.Student;
+import com.learning.security.model.Student;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.security.web.csrf.CsrfToken;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -31,6 +31,7 @@ public class StudentController {
 
     @PostMapping("/students")
     public List<Student> addStudent(@RequestBody Student student){
+        System.out.println("Adding student: " + student);
         students.add(student);
         return students;
     }

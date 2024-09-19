@@ -1,4 +1,4 @@
-package com.learning.security.entity;
+package com.learning.security.model;
 
 public class Student {
 
