@@ -1,5 +1,6 @@
 package com.learning.security.config;
 
+import com.learning.security.filter.JwtFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -16,6 +17,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
@@ -23,6 +25,9 @@ public class SecurityConfig {
 
     @Autowired
     private UserDetailsService userDetailsService;
+
+    @Autowired
+    private JwtFilter jwtFilter;
 
 //    Creating a custom filter chain based on our requirements
     @Bean
@@ -47,10 +52,13 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(request-> request
 //                        .requestMatchers("/h2-console/**").permitAll()  //Added for skipping auth for H2 DB
-                        .anyRequest().authenticated())
+                        .requestMatchers("register","login").permitAll()   //Added for skipping security for register and login (Common practice)
+                        .anyRequest().authenticated())  // Default authentication is UsernamePasswordAuthenticationFilter
                 .httpBasic(Customizer.withDefaults())
                 .sessionManagement(session->
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+//                Adding a new JWT Token filter before UsernamePasswordAuthenticationFilter filter
+                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
 
     }
@@ -76,7 +84,7 @@ public class SecurityConfig {
 //        return new InMemoryUserDetailsManager(user1,user2);
 //    }
 
-//  Authentication Manager for JWT added to speak with Authentication Provider
+//  Authentication Manager for JWT added to get control of Authentication manager and speak with Authentication Provider
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
         return config.getAuthenticationManager();
