@@ -3,9 +3,11 @@ package com.learning.security.config;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.Customizer;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -44,7 +46,7 @@ public class SecurityConfig {
 //                .csrf(customizer -> customizer.disable())
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(request-> request
-                        .requestMatchers("/h2-console/**").permitAll()  //Added for skipping auth for H2 DB
+//                        .requestMatchers("/h2-console/**").permitAll()  //Added for skipping auth for H2 DB
                         .anyRequest().authenticated())
                 .httpBasic(Customizer.withDefaults())
                 .sessionManagement(session->
@@ -73,6 +75,12 @@ public class SecurityConfig {
 //
 //        return new InMemoryUserDetailsManager(user1,user2);
 //    }
+
+//  Authentication Manager for JWT added to speak with Authentication Provider
+    @Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
+        return config.getAuthenticationManager();
+    }
 
 //    From webpage - Credentials(UserName, Password) is passed as Authentication Object > Authentication Provider > Authenticated object
     @Bean
