@@ -1,6 +1,6 @@
 package com.learning.security.config;
 
-import com.learning.security.filter.JwtFilter;
+import com.learning.security.filter.JWTFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -15,7 +15,6 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
@@ -27,7 +26,7 @@ public class SecurityConfig {
     private UserDetailsService userDetailsService;
 
     @Autowired
-    private JwtFilter jwtFilter;
+    private JWTFilter jwtFilter;
 
 //    Creating a custom filter chain based on our requirements
     @Bean
@@ -57,7 +56,7 @@ public class SecurityConfig {
                 .httpBasic(Customizer.withDefaults())
                 .sessionManagement(session->
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-//                Adding a new JWT Token filter before UsernamePasswordAuthenticationFilter filter
+//                Adding a new JWT Token filter before UsernamePasswordAuthenticationFilter filter to verify token when a request comes
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
 

@@ -30,6 +30,7 @@ public class UserService {
     }
 
     public String verify(Users user) {
+//        Using UsernamePasswordAuthenticationToken filter to verify user details
         Authentication authentication =
                 authenticationManager.authenticate(
                         new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword()));
